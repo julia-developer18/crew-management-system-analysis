@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: Crew Lifecycle Automation API
+  description: Интеграционный контракт сервиса смарт-процессов и планировщика задач
+  version: 2.0.0
+paths:
+  /api/v1/smart-processes/crew/generate-from-deal:
+    post:
+      summary: Создание элемента смарт-процесса «Экипаж» по событию успешной оплаты
+      operationId: createCrewFromDeal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - dealId
+                - contactId
+                - vesselId
+                - positionTitle
+                - startDate
+                - endDate
+              properties:
+                dealId:
+                  type: integer
+                  example: 5401
+                contactId:
+                  type: integer
+                  example: 1204
+                vesselId:
+                  type: integer
+                  example: 88
+                positionTitle:
+                  type: string
+                  example: "Старший помощник капитана"
+                startDate:
+                  type: string
+                  format: date
+                  example: "2026-12-01"
+                endDate:
+                  type: string
+                  format: date
+                  example: "2027-04-01"
+      responses:
+        '201':
+          description: Элемент смарт-процесса создан, задача за 30 дней запланирована
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  crewAssignmentId:
+                    type: integer
+                    example: 9812
+                  scheduledTaskId:
+                    type: integer
+                    example: 304
+                  status:
+                    type: string
+                    example: "ACTIVE"
+                  reminderDate:
+                    type: string
+                    format: date
+                    example: "2027-03-02"
+        '422':
+          description: Некорректные интервалы дат или отсутствие обязательных реквизитов
